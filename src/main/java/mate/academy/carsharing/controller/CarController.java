@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.carsharing.dto.CarRequestDto;
 import mate.academy.carsharing.dto.CarResponseDto;
+import mate.academy.carsharing.dto.CarSearchParametersDto;
 import mate.academy.carsharing.service.CarService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -52,5 +53,10 @@ public class CarController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         carService.deleteById(id);
+    }
+
+    @GetMapping("/search")
+    public List<CarResponseDto> searchCars(CarSearchParametersDto searchParametersDto) {
+        return carService.search(searchParametersDto);
     }
 }

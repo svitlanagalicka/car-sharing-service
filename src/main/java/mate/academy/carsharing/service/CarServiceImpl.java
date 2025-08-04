@@ -5,11 +5,14 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.carsharing.dto.CarRequestDto;
 import mate.academy.carsharing.dto.CarResponseDto;
+import mate.academy.carsharing.dto.CarSearchParametersDto;
 import mate.academy.carsharing.exception.EntityNotFoundException;
 import mate.academy.carsharing.mapper.CarMapper;
 import mate.academy.carsharing.model.Car;
 import mate.academy.carsharing.repository.CarRepository;
+import mate.academy.carsharing.repository.CarSpecificationBuilder;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
+    private final CarSpecificationBuilder carSpecificationBuilder;
 
     @Override
     @Transactional
@@ -56,5 +60,14 @@ public class CarServiceImpl implements CarService {
         carMapper.updateCar(car, carRequestDto);
         Car updatedCar = carRepository.save(car);
         return carMapper.toDto(updatedCar);
+    }
+
+    @Override
+    public List<CarResponseDto> search(CarSearchParametersDto parametersDto) {
+        Specification<Car> carSpecification = carSpecificationBuilder.build(parametersDto);
+        return carRepository.findAll(carSpecification)
+                .stream()
+                .map(carMapper::toDto)
+                .toList();
     }
 }

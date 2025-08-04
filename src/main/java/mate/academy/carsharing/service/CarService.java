@@ -3,6 +3,7 @@ package mate.academy.carsharing.service;
 import java.util.List;
 import mate.academy.carsharing.dto.CarRequestDto;
 import mate.academy.carsharing.dto.CarResponseDto;
+import mate.academy.carsharing.dto.CarSearchParametersDto;
 import org.springframework.data.domain.Pageable;
 
 public interface CarService {
@@ -16,4 +17,6 @@ public interface CarService {
     void deleteById(Long id);
 
     CarResponseDto updateCar(Long id, CarRequestDto carRequestDto);
+
+    List<CarResponseDto> search(CarSearchParametersDto parametersDto);
 }
