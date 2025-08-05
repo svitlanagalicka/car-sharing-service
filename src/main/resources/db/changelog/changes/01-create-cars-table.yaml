@@ -32,7 +32,7 @@ databaseChangeLog:
                   name: inventory
                   type: int
               - column:
-                  name: dailyFee
+                  name: daily_fee
                   type: decimal(10,2)
                   constraints:
                     nullable: false
