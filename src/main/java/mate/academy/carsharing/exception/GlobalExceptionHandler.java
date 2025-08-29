@@ -46,6 +46,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(RentalNotFoundException.class)
+    public ResponseEntity<Object> handleRentalReturnedException(
+            EntityNotFoundException ex,
+            WebRequest request) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.NOT_FOUND);
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<Object> handleRegistrationException(
             RegistrationException ex,
