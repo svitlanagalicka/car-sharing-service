@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -45,4 +47,9 @@ public class Rental {
 
     @Column(nullable = false, columnDefinition = "TINYINT")
     private boolean isDeleted = false;
+
+    public BigDecimal getTotalPrice() {
+        long days = ChronoUnit.DAYS.between(rentalDate, returnDate);
+        return car.getDailyFee().multiply(BigDecimal.valueOf(days));
+    }
 }
