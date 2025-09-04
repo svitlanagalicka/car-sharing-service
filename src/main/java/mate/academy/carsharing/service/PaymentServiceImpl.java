@@ -21,6 +21,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final StripePaymentServiceImpl stripePaymentService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -39,6 +40,8 @@ public class PaymentServiceImpl implements PaymentService {
         stripePaymentService.attachSessionToPayment(payment, session);
 
         paymentRepository.save(payment);
+        notificationService.sendNotification("New payment was created for rental with ID: "
+                + rental);
         return paymentMapper.toPaymentDto(payment);
     }
 

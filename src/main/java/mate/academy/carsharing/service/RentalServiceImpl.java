@@ -26,6 +26,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -49,6 +50,10 @@ public class RentalServiceImpl implements RentalService {
         rental.setReturnDate(rentalRequestDto.returnDate());
 
         Rental saved = rentalRepository.save(rental);
+        notificationService.sendNotification("New rental created with ID: "
+                + rental.getId()
+                + ", User ID: " + rental.getUser().getId()
+                + ", Car ID: " + rental.getCar().getId());
         return rentalMapper.toRentalDto(saved);
     }
 
