@@ -47,8 +47,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RentalNotFoundException.class)
-    public ResponseEntity<Object> handleRentalReturnedException(
-            EntityNotFoundException ex,
+    public ResponseEntity<Object> handleRentalNotFoundException(
+            RentalNotFoundException ex,
             WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());

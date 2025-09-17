@@ -1,13 +1,12 @@
 package mate.academy.carsharing.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
 public class UserResponseDto {
     private Long id;
     private String email;
     private String firstName;
     private String lastName;
+    private String role;
 }
