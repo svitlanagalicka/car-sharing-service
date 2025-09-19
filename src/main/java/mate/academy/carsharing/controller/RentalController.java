@@ -1,5 +1,6 @@
 package mate.academy.carsharing.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.carsharing.dto.RentalRequestDto;
@@ -24,17 +25,22 @@ public class RentalController {
     private final RentalService rentalService;
 
     @PostMapping
+    @Operation(summary = "Save a new rental", description = "Create a new rental entry")
     @ResponseStatus(HttpStatus.CREATED)
     public RentalResponseDto createRental(@RequestBody @Valid RentalRequestDto rentalRequestDto) {
         return rentalService.create(rentalRequestDto);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a rental by its ID",
+            description = "Get detailed information about a rental by its ID")
     public RentalResponseDto getRentalById(@PathVariable Long id) {
         return rentalService.getById(id);
     }
 
     @GetMapping
+    @Operation(summary = "Get all rentals",
+            description = "Get a list of all available rentals")
     public Page<RentalResponseDto> getRentals(Pageable pageable,
                                               @RequestParam Long userId,
                                               @RequestParam boolean isActive) {
@@ -42,6 +48,8 @@ public class RentalController {
     }
 
     @PostMapping("/{id}/return")
+    @Operation(summary = "Return rental",
+            description = "Return information about rental by ID")
     public RentalResponseDto returnRental(@PathVariable Long id) {
         return rentalService.returnCar(id);
     }

@@ -63,11 +63,20 @@ class CarControllerTest {
                 .param("size", "20"))
                 .andExpect(status().isOk())
                 .andReturn();
+
+        CarResponseDto expectedCar = new CarResponseDto();
+        expectedCar.setId(1L);
+        expectedCar.setModel("KIA");
+        expectedCar.setBrand("SOUL");
+        expectedCar.setType(Car.CarType.HATCHBACK);
+        expectedCar.setInventory(7);
+        expectedCar.setDailyFee(new BigDecimal("199.00"));
+
         List<CarResponseDto> actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(),
                         new TypeReference<List<CarResponseDto>>() {});
-        List<CarResponseDto> expected = List.of(new CarResponseDto(1L, "KIA", "SOUL",
-                Car.CarType.HATCHBACK, 7, new BigDecimal("199.00")));
+
+        List<CarResponseDto> expected = List.of(expectedCar);
         assertEquals(expected, actual);
     }
 
@@ -187,6 +196,11 @@ class CarControllerTest {
     @DisplayName("Return NOT_FOUND when car does not exist")
     void updateCar_returnNotFound_carNotExist() throws Exception {
         CarRequestDto requestDto = new CarRequestDto();
+        requestDto.setModel("Model");
+        requestDto.setBrand("Brand");
+        requestDto.setType(Car.CarType.SEDAN);
+        requestDto.setInventory(7);
+        requestDto.setDailyFee(BigDecimal.valueOf(99));
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 

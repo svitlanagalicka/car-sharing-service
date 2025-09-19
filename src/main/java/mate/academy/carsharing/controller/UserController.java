@@ -1,5 +1,6 @@
 package mate.academy.carsharing.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.carsharing.dto.UpdateUserProfileRequestDto;
@@ -23,6 +24,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}/role")
+    @Operation(summary = "Update user role",
+            description = "Allows MANAGER to update the role of a user by ID")
     public UserResponseDto updateUserRole(@PathVariable Long id,
                                           @RequestBody @Valid UpdateUserRoleRequestDto
                                                   roleRequestDto) {
@@ -31,6 +34,8 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('CUSTOMER')")
+    @Operation(summary = "Get current user info",
+            description = "Allows CUSTOMER to get their own profile information")
     public UserResponseDto getUserInfo(Authentication authentication) {
         String email = authentication.getName();
         return userService.getUserByEmail(email);
@@ -38,6 +43,8 @@ public class UserController {
 
     @PutMapping("/me")
     @PreAuthorize("hasRole('CUSTOMER')")
+    @Operation(summary = "Update current user profile",
+            description = "Allows CUSTOMER to update their own profile data")
     public UserResponseDto updateUserProfile(
             Authentication authentication,
             @RequestBody @Valid UpdateUserProfileRequestDto profileRequestDto) {

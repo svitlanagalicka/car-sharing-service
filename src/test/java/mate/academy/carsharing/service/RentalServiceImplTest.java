@@ -91,7 +91,7 @@ class RentalServiceImplTest {
         when(carRepository.findById(1L)).thenReturn(Optional.of(car));
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(user));
         when(rentalRepository.save(any(Rental.class))).thenReturn(rental);
-        when(rentalMapper.toRentalDto(rental)).thenReturn(responseDto);
+        when(rentalMapper.toRentalDto(any(Rental.class))).thenReturn(responseDto);
 
         RentalResponseDto result = rentalService.create(requestDto);
 

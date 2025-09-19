@@ -1,6 +1,7 @@
 package mate.academy.carsharing.service;
 
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.carsharing.dto.UpdateUserProfileRequestDto;
@@ -44,10 +45,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
-        Role role = roleRepository.findByRole(roleRequestDto.role());
-        if (role == null) {
-            throw new EntityNotFoundException("Role not found: " + roleRequestDto.role());
-        }
+        Role role = Optional.ofNullable(roleRepository.findByRole(roleRequestDto.role()))
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Role not found: " + roleRequestDto.role()));
+
         user.getRoles().clear();
         user.getRoles().add(role);
         userRepository.save(user);

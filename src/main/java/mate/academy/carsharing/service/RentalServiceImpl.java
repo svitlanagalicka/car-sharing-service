@@ -32,16 +32,18 @@ public class RentalServiceImpl implements RentalService {
     @Transactional
     public RentalResponseDto create(RentalRequestDto rentalRequestDto) {
         Car car = carRepository.findById(rentalRequestDto.carId()).orElseThrow(()
-                -> new EntityNotFoundException("Can not found car"));
-        if ((car.getInventory() <= 0)) {
-            throw new EntityNotFoundException("No cars available for this model");
+                -> new EntityNotFoundException("Can not found car with id: "
+                + rentalRequestDto.carId()));
+        if (car.getInventory() <= 0) {
+            throw new EntityNotFoundException("No cars available for this model: "
+                    + car.getModel());
         }
         car.setInventory(car.getInventory() - 1);
         carRepository.save(car);
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(()
-                -> new EntityNotFoundException("Can not found user"));
+                -> new EntityNotFoundException("Can not found user with email: " + email));
 
         Rental rental = new Rental();
         rental.setCar(car);
@@ -49,34 +51,35 @@ public class RentalServiceImpl implements RentalService {
         rental.setRentalDate(LocalDate.now());
         rental.setReturnDate(rentalRequestDto.returnDate());
 
-        Rental saved = rentalRepository.save(rental);
+        rentalRepository.save(rental);
         notificationService.sendNotification("New rental created with ID: "
                 + rental.getId()
                 + ", User ID: " + rental.getUser().getId()
                 + ", Car ID: " + rental.getCar().getId());
-        return rentalMapper.toRentalDto(saved);
+        return rentalMapper.toRentalDto(rental);
     }
 
     @Override
     @Transactional
     public RentalResponseDto returnCar(Long rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
-                .orElseThrow(() -> new RentalNotFoundException("Rental not found"));
+                .orElseThrow(() ->
+                        new RentalNotFoundException("Rental not found with id: " + rentalId));
         if (rental.getActualReturnDate() != null) {
-            throw new EntityNotFoundException("Car was returned");
+            throw new EntityNotFoundException("Car for rental id " + rentalId + "was returned");
         }
         rental.setActualReturnDate(LocalDate.now());
         Car car = rental.getCar();
         car.setInventory(car.getInventory() + 1);
         carRepository.save(car);
-        Rental saved = rentalRepository.save(rental);
-        return rentalMapper.toRentalDto(saved);
+        rentalRepository.save(rental);
+        return rentalMapper.toRentalDto(rental);
     }
 
     @Override
     public RentalResponseDto getById(Long id) {
         Rental rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new RentalNotFoundException("Rental not found"));
+                .orElseThrow(() -> new RentalNotFoundException("Rental not found with id: " + id));
         return rentalMapper.toRentalDto(rental);
     }
 

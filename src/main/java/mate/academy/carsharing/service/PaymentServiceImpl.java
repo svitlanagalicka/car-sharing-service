@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.carsharing.dto.PaymentResponseDto;
 import mate.academy.carsharing.dto.RentalResponseDto;
+import mate.academy.carsharing.exception.EntityNotFoundException;
+import mate.academy.carsharing.exception.RentalNotFoundException;
 import mate.academy.carsharing.mapper.PaymentMapper;
 import mate.academy.carsharing.model.Payment;
 import mate.academy.carsharing.model.Rental;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
@@ -24,10 +27,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final NotificationService notificationService;
 
     @Override
-    @Transactional
     public PaymentResponseDto createPayment(Long rentalId) {
         Rental rental = rentalRepository.findByIdWithCar(rentalId)
-                .orElseThrow(() -> new RuntimeException("Rental not found"));
+                .orElseThrow(() -> new RentalNotFoundException("Rental not found: " + rentalId));
         Payment payment = new Payment();
         payment.setRental(rental);
         payment.setAmount(rental.getTotalPrice());
@@ -48,7 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public RentalResponseDto getPayment(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Payment not found: " + paymentId));
         Rental rental = payment.getRental();
         return new RentalResponseDto(rental.getId(),
                 rental.getRentalDate(),

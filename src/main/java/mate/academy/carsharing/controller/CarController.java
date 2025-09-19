@@ -1,5 +1,6 @@
 package mate.academy.carsharing.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -28,34 +29,42 @@ public class CarController {
     private final CarService carService;
 
     @GetMapping
+    @Operation(summary = "Get all cars", description = "Get a list of all available cars")
     public List<CarResponseDto> findAll(Pageable pageable) {
         return carService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a car by its ID",
+            description = "Get detailed information about a car by its ID")
     public CarResponseDto getCarById(@PathVariable Long id) {
         return carService.getCarById(id);
     }
 
     @PostMapping
+    @Operation(summary = "Save a new car", description = "Create a new car entry")
     @ResponseStatus(HttpStatus.CREATED)
     public CarResponseDto save(@RequestBody @Valid CarRequestDto carRequestDto) {
         return carService.save(carRequestDto);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update an existing car",
+            description = "Update the information of an existing car")
     public CarResponseDto updateCar(@PathVariable Long id,
-                                    @RequestBody CarRequestDto updatedCar) {
+                                    @RequestBody @Valid CarRequestDto updatedCar) {
         return carService.updateCar(id, updatedCar);
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a car by ID", description = "Delete a car from the DB by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         carService.deleteById(id);
     }
 
     @GetMapping("/search")
+    @Operation(summary = "Search cars", description = "Search for cars by parameters")
     public List<CarResponseDto> searchCars(CarSearchParametersDto searchParametersDto) {
         return carService.search(searchParametersDto);
     }
