@@ -26,8 +26,8 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public CarResponseDto save(CarRequestDto carRequestDto) {
         Car car = carMapper.toModel(carRequestDto);
-        Car savedCar = carRepository.save(car);
-        return carMapper.toDto(savedCar);
+        carRepository.save(car);
+        return carMapper.toDto(car);
     }
 
     @Override

@@ -27,8 +27,6 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     @PostConstruct
     public void init() {
         Stripe.apiKey = stripeApiKey;
-        System.out.println("StripePaymentService initialized with key: "
-                + (stripeApiKey != null ? "[OK]" : "[NULL]"));
     }
 
     @Override

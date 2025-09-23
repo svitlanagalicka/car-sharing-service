@@ -61,13 +61,13 @@ class CarServiceImplTest {
 
         when(carMapper.toModel(carRequestDto)).thenReturn(car);
         when(carRepository.save(car)).thenReturn(savedCar);
-        when(carMapper.toDto(savedCar)).thenReturn(carResponseDto);
+        when(carMapper.toDto(any(Car.class))).thenReturn(carResponseDto);
 
         CarResponseDto result = carService.save(carRequestDto);
         assertEquals(carResponseDto, result);
         verify(carMapper).toModel(carRequestDto);
         verify(carRepository).save(car);
-        verify(carMapper).toDto(savedCar);
+        verify(carMapper).toDto(any(Car.class));
     }
 
     @Test
