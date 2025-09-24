@@ -1,0 +1,42 @@
+package mate.academy.carsharing.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import mate.academy.carsharing.dto.UserLoginRequestDto;
+import mate.academy.carsharing.dto.UserLoginResponseDto;
+import mate.academy.carsharing.dto.UserRequestDto;
+import mate.academy.carsharing.dto.UserResponseDto;
+import mate.academy.carsharing.exception.RegistrationException;
+import mate.academy.carsharing.security.AuthenticationService;
+import mate.academy.carsharing.service.UserService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/auth")
+@Tag(name = "Authentication",
+        description = "Endpoints for user authentication and registration")
+public class AuthenticationController {
+    private final UserService userService;
+    private final AuthenticationService authenticationService;
+
+    @PostMapping("/login")
+    @Operation(summary = "user login",
+            description = "user login by email and password")
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
+        return authenticationService.authenticate(request);
+    }
+
+    @PostMapping("/registration")
+    @Operation(summary = "user registration",
+            description = "user registration by email, password and repeatPassword")
+    public UserResponseDto registerUser(@RequestBody @Valid UserRequestDto userRequestDto)
+            throws RegistrationException {
+        return userService.register(userRequestDto);
+    }
+}
